@@ -32,23 +32,22 @@
                     <input type="password" class="form-control" id="input-password" placeholder="Password">
                     <label for="floatingInput">Password</label>
                 </div>
-                <div class="alert alert-danger" role="alert">
+                <div class="d-none alert alert-danger mt-4" role="alert">
                     Login e/ou senha incorretos
                 </div>
-                <div class="alert alert-success" role="alert">
+                <div class="d-none alert alert-success mt-4" role="alert">
                     Autenticado com sucesso
                 </div>
-                <button id="btn-login" class="mt-4 w-100 btn btn-primary">Entrar</button>
-                <button id="btn-login" disabled class="mt-4 w-100 btn btn-primary">
-                    <div class="spinner-border spinner-border-sm" role="status">
+                <button id="btn-login" class="mt-4 w-100 btn btn-primary">
+                    <div class="d-none spinner-border spinner-border-sm" role="status">
                         <span class="visually-hidden">Loading...</span>
-                      </div>
-                      Entrando...
+                    </div>
+                    <p class="d-inline">Entrar</p>
                 </button>
             </div>
         </div>
     </div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
-   <script type="module" src="/src/main.ts"></script>
+    <script type="module" src="/src/main.ts"></script>
 </body>
 </html>

@@ -6,10 +6,9 @@ export function showCategories (categories: Categorie[], elemento: HTMLElement):
         <option>Todas</option>
         ${categories.map(categorie => {
             return `
-            <option>${categorie.name}</option>
+            <option idCategoria = '${categorie.id}'>${categorie.name}</option>
             `
         })}
     ` 
-
     elemento.innerHTML = template;
 }

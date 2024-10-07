@@ -14,6 +14,7 @@ function showButtons(isManager: boolean) {
 }
 
 export function showProducts(products: Product[], elemento: HTMLElement, isManager: boolean = false) {
+  elemento.innerHTML = ''
   products.forEach((product) => {
     elemento.innerHTML += `
             <div class="col-lg-3">

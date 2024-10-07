@@ -3,10 +3,10 @@ import { Categorie } from "./model/categories.ts";
 export function showCategories (categories: Categorie[], elemento: HTMLElement): void {
 
     const template = ` 
-        <option>Todas</option>
+        <option value = ''>Todas</option>
         ${categories.map(categorie => {
             return `
-            <option idCategoria = '${categorie.id}'>${categorie.name}</option>
+            <option value = '${categorie.id}'>${categorie.name}</option>
             `
         })}
     ` 

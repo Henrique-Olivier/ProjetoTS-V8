@@ -2,7 +2,18 @@ import { getCategories } from "./getCategorie.ts";
 import { Product } from "./model/products.ts";
 const categories = await getCategories();
 
-export function showProducts(products: Product[], elemento: HTMLElement) {
+function showButtons(isManager: boolean) {
+  if(isManager) {
+    return `
+    <button class="btn btn-primary">Edit</button>
+    <button class="btn btn-danger">Remove</button>
+    `
+  };
+
+  return '<button class="btn btn-primary">Add</button>';
+}
+
+export function showProducts(products: Product[], elemento: HTMLElement, isManager: boolean = false) {
   elemento.innerHTML = ''
   products.forEach((product) => {
     elemento.innerHTML += `
@@ -13,7 +24,7 @@ export function showProducts(products: Product[], elemento: HTMLElement) {
                       <h5 class="card-title">${product.name}</h5>
                       <p class="card-text">${product.resume}</p>
                       <div class="d-flex align-items-center" style="gap: 20px;">
-                        <button class="btn btn-primary">Add</button>
+                        ${showButtons(isManager)}
                         <span>${product.price.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</span>
                       </div>
                      

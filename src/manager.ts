@@ -18,6 +18,9 @@ const textProductResume: htmlInput = document.querySelector("#text-resume")!;
 const selectProductCategory: HTMLSelectElement = document.querySelector("#select-category")!;
 const inputProductPrice: htmlInput = document.querySelector("#input-price")!;
 const alertModal: htmlElement = document.querySelector("#alert-modal")!;
+const modalHeader: htmlElement = document.querySelector(".modal-header")!;
+const modalBody: htmlElement = document.querySelector(".modal-body")!;
+const modalFooter: htmlElement = document.querySelector(".modal-footer")!;
 
 btnAddProduct.addEventListener("click", validateProduct);
 
@@ -40,11 +43,12 @@ if (categories !== null ) {
 
 async function listProducts() {
     const produtos = await getProducts();
-    
+
     if (produtos !== null ) {
-        showProducts(produtos, insertProducts, true)
+        showProducts(produtos, insertProducts, true);
+        getListBtnEdit();
     } else {
-        showEmptyState();
+        showEmptyState(insertProducts, "Nenhum produto encontrado para esse filtro.");
     }
 }
 listProducts()
@@ -154,4 +158,21 @@ async function addNewProduct(name: string, resume: string, category_id: string, 
     } catch (error) {
         showAlert(alertModal, "Erro ao adicionar o produto, tenta novamente mais tarde", "alert-warning")
     }
+}
+
+function getListBtnEdit(){
+    const listBtnEdit = document.querySelectorAll(".btn-edit-product");
+    listBtnEdit.forEach(btnEdit => {
+        btnEdit.addEventListener("click", () => {
+            editModal(btnEdit);
+        })
+    });
+}
+
+function editModal(btnElement: Element){
+    const productInfo = btnElement.parentElement?.parentElement?.children!;
+    modalHeader.firstElementChild!.textContent = 'Editar Produto';
+    inputProductName.value = productInfo[0].textContent!;
+    textProductResume.value = productInfo[1].textContent!;
+    inputProductPrice.value = productInfo[2].lastElementChild?.textContent!;
 }

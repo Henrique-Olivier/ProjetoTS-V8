@@ -55,20 +55,23 @@
             </div>
             <div class="modal-body">
                 <div class="d-flex flex-column" style="gap: 10px;">
-                    <input type="text" id="name" placeholder="product name" class="form-control">
-                    <textarea id="resume" class="form-control" placeholder="Resume"></textarea>
-                    <select class="form-control">
+                    <input type="text" id="input-name" placeholder="product name" class="form-control">
+                    <textarea id="text-resume" class="form-control" placeholder="Resume"></textarea>
+                    <select id="select-category" class="form-control">
                         <option>categoria</option>
                     </select>
+                </div>
+                <div id="alert-modal" class="alert alert-warning mt-4 d-none" role="alert">
+                    
                 </div>
             </div>
             <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-            <button type="button" disabled class="btn btn-primary">
-                <div class="spinner-border spinner-border-sm" role="status">
+            <button type="button" id="btn-add-product" class="btn btn-primary">
+                <div class="spinner-border spinner-border-sm d-none" role="status">
                     <span class="visually-hidden">Loading...</span>
-                  </div>
-                Save changes
+                </div>
+                Add new product
             </button>
             </div>
         </div>

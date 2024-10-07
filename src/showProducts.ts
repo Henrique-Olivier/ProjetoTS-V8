@@ -3,6 +3,7 @@ import { Product } from "./model/products.ts";
 const categories = await getCategories();
 
 export function showProducts(products: Product[], elemento: HTMLElement) {
+  elemento.innerHTML = ''
   products.forEach((product) => {
     elemento.innerHTML += `
             <div class="col-lg-3">

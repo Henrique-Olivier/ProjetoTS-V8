@@ -23,7 +23,7 @@ export function showProducts(products: Product[], elemento: HTMLElement, isManag
                       <h5 class="card-title">${product.name}</h5>
                       <p class="card-text">${product.resume}</p>
                       <div class="d-flex align-items-center" style="gap: 20px;">
-                        ${isManager ? showButtons(isManager) : showButtons(isManager)}
+                        ${showButtons(isManager)}
                         <span>${product.price.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</span>
                       </div>
                      

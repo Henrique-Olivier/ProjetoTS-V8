@@ -9,7 +9,7 @@ const supabaseKey: string = import.meta.env.VITE_SUPABASE_ANON_KEY;
 
 type htmlInput = HTMLInputElement;
 type htmlElement = HTMLElement;
-type alertType = "alert-warning" | "alert-success"
+type alertType = "alert-warning" | "alert-success";
 
 const insertProducts: htmlElement = document.querySelector("#insert-products")!;
 const btnNewProduct: htmlElement = document.querySelector("#btn-new-product")!;
@@ -21,6 +21,7 @@ const inputProductPrice: htmlInput = document.querySelector("#input-price")!;
 const alertModal: htmlElement = document.querySelector("#alert-modal")!;
 const modalHeader: htmlElement = document.querySelector(".modal-header")!;
 const btnModalClose = modalHeader.lastElementChild as HTMLButtonElement;
+const modalBody: htmlElement = document.querySelector(".modal-body")!;
 const modalFooter: htmlElement = document.querySelector(".modal-footer")!;
 
 btnNewProduct.addEventListener("click", addModal);
@@ -66,6 +67,7 @@ async function listProducts() {
     if (produtos !== null ) {
         showProducts(produtos, insertProducts, true);
         getListBtnEdit();
+        getListBtnRemove();
     } else {
         showEmptyState(insertProducts, "Nenhum produto encontrado para esse filtro.");
     }
@@ -257,5 +259,46 @@ function editProduct(idProduct: string, name: string, resume: string, category_i
 
     } catch (error) {
         showAlert(alertModal, "Erro ao editar o produto, tenta novamente mais tarde", "alert-warning")
+    }
+}
+
+function getListBtnRemove() {
+    const listBtnRemove = document.querySelectorAll(".btn-remove-product");
+    listBtnRemove.forEach(btnRemove => {
+        btnRemove.addEventListener("click", () => {
+            editRemoveModal(btnRemove);
+        })
+    });
+}
+
+function editRemoveModal(btnRemove: Element) {
+    const productInfo = btnRemove.parentElement!.parentElement!.children!;
+    const productId = btnRemove.parentElement!.parentElement!.id;
+    modalBody.children[0].classList.toggle("d-none");
+    //removeProduct(productId)
+}
+
+function removeProduct(productId: string) {
+    try {
+        showLoading(true, "btn-edit-product");
+        setTimeout(async () => {
+            const res = await fetch(`${supabaseURL}/rest/v1/products?id=eq.${productId}`, {
+                method: "DELETE",
+                headers: {
+                  apikey: supabaseKey,
+                  "Content-Type": "application/json",
+                }
+            });
+
+            if(res.ok) {
+                showLoading(false, "btn-edit-product");
+                showAlert(alertModal, "Produto excluído com sucesso!", "alert-success");
+                listProducts();
+                setTimeout(() => btnModalClose.click(), 1000);
+            }
+        }, 1000)
+
+    } catch (error) {
+        showAlert(alertModal, "Erro ao excluir o produto, tenta novamente mais tarde", "alert-warning")
     }
 }

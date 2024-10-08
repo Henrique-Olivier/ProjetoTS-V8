@@ -5,7 +5,7 @@ const categories = await getCategories();
 function showButtons(isManager: boolean) {
   if(isManager) {
     return `
-    <button class="btn btn-primary">Edit</button>
+    <button class="btn btn-primary btn-edit-product" data-bs-toggle="modal" data-bs-target="#exampleModal">Edit</button>
     <button class="btn btn-danger">Remove</button>
     `
   };
@@ -20,7 +20,7 @@ export function showProducts(products: Product[], elemento: HTMLElement, isManag
             <div class="col-lg-3">
                 <div class="card">
                     <img src="${findImgByCategory(product.category_id)}" class="card-img-top" alt="...">
-                    <div class="card-body">
+                    <div id="${product.id}" id-category="${product.category_id}" class="card-body">
                       <h5 class="card-title">${product.name}</h5>
                       <p class="card-text">${product.resume}</p>
                       <div class="d-flex align-items-center" style="gap: 20px;">

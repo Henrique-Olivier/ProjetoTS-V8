@@ -12,6 +12,7 @@ type htmlElement = HTMLElement;
 type alertType = "alert-warning" | "alert-success"
 
 const insertProducts: htmlElement = document.querySelector("#insert-products")!;
+const btnNewProduct: htmlElement = document.querySelector("#btn-new-product")!;
 const btnAddProduct: htmlElement = document.querySelector("#btn-add-product")!;
 const inputProductName: htmlInput = document.querySelector("#input-name")!;
 const textProductResume: htmlInput = document.querySelector("#text-resume")!;
@@ -19,8 +20,26 @@ const selectProductCategory: HTMLSelectElement = document.querySelector("#select
 const inputProductPrice: htmlInput = document.querySelector("#input-price")!;
 const alertModal: htmlElement = document.querySelector("#alert-modal")!;
 const modalHeader: htmlElement = document.querySelector(".modal-header")!;
-const modalBody: htmlElement = document.querySelector(".modal-body")!;
+const btnModalClose = modalHeader.lastElementChild as HTMLButtonElement;
 const modalFooter: htmlElement = document.querySelector(".modal-footer")!;
+
+btnNewProduct.addEventListener("click", addModal);
+
+function clearModal() {
+    alertModal.classList.add('d-none');
+    inputProductName.value = '';
+    textProductResume.value = '';
+    selectProductCategory.value = '';
+    inputProductPrice.value = '';
+}
+
+function addModal(){
+    clearModal();
+    modalHeader.firstElementChild!.textContent = 'Adicionar Produto';
+    console.log(modalFooter)
+    modalFooter.lastElementChild!.lastElementChild!.textContent = 'Salvar Produto'
+    modalFooter.lastElementChild!.id = "btn-add-product";
+}
 
 btnAddProduct.addEventListener("click", validateProduct);
 
@@ -59,7 +78,7 @@ function validateProduct() {
     const isMaxResumeValid = validateMaxTextResume(textProductResume.value);
     const isCategoryValid = validateSelectCategory(selectProductCategory.value);
     const categorySelectId = selectProductCategory.options[selectProductCategory.selectedIndex];
-    const categorytId = categorySelectId.getAttribute("idcategoria")!;
+    const categorytId = categorySelectId.getAttribute("value")!;
     const [isPriceValid, price] = validateInputPrice(inputProductPrice.value);
 
     if(!isNameValid) {
@@ -82,7 +101,11 @@ function validateProduct() {
         return showAlert(alertModal, "O preço deve ser maior que 1 real", "alert-warning")
     }
 
-    addNewProduct(inputProductName.value, textProductResume.value, categorytId, price);
+    if(modalFooter.lastElementChild!.id === "btn-add-product") {
+        addNewProduct(inputProductName.value, textProductResume.value, categorytId, price);
+    } else {
+        editProduct(productIdInfo ,inputProductName.value, textProductResume.value, categorytId, price)
+    }
 }
 
 function validateInputName(inputName: string) {
@@ -122,38 +145,55 @@ function showAlert(element: HTMLElement, message: string, alertType: alertType) 
     }
 }
 
-function showLoading(disabled: boolean){
-    btnAddProduct.firstElementChild?.classList.toggle("d-none");
-    if(disabled) {
-        btnAddProduct.setAttribute("disabled", "true")
+type btnType = "btn-add-product" | "btn-edit-product";
+function showLoading(disabled: boolean, btnType: btnType){
+    const btnModal = document.querySelector(`#${btnType}`)!;
+    btnModal.firstElementChild!.classList.toggle("d-none");
+
+    if(btnType === "btn-add-product") {
+        btnModal.lastElementChild!.textContent = "Adicionando..."
     } else {
-        btnAddProduct.removeAttribute("disabled")
+        btnModal.lastElementChild!.textContent = "Editando..."
     }
+
+    if(disabled) {
+        btnModal.setAttribute("disabled", "true")
+    } else if(btnType === "btn-add-product") {
+        btnModal.lastElementChild!.textContent = "Adicionar";
+        btnModal.removeAttribute("disabled");
+    } else {
+        btnModal.lastElementChild!.textContent = "Editar";
+        btnModal.removeAttribute("disabled");
+    }
+
 }
 
-async function addNewProduct(name: string, resume: string, category_id: string, price: number) {
+function addNewProduct(name: string, resume: string, category_id: string, price: number) {
     try {
-        showLoading(true);
-        const res = await fetch(`${supabaseURL}/rest/v1/products`, {
-            method: "POST",
-            headers: {
-              apikey: supabaseKey,
-              Authorization: `Bearer ${supabaseKey}`,
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-                name,
-                resume,
-                category_id,
-                price
-            })
-        });
-
-        if(res.ok) {
-            showLoading(false);
-            showAlert(alertModal, "Novo Produto Adicionado!", "alert-success");
-            listProducts()
-        }
+        showLoading(true, "btn-add-product");
+        setTimeout(async () => {
+            const res = await fetch(`${supabaseURL}/rest/v1/products`, {
+                method: "POST",
+                headers: {
+                  apikey: supabaseKey,
+                  Authorization: `Bearer ${supabaseKey}`,
+                  "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    name,
+                    resume,
+                    category_id,
+                    price
+                })
+            });
+    
+            if(res.ok) {
+                showLoading(false, "btn-add-product");
+                showAlert(alertModal, "Novo Produto Adicionado!", "alert-success");
+                listProducts();
+                setTimeout(() => btnModalClose.click(), 1000);
+            }
+        }, 1000)
 
     } catch (error) {
         showAlert(alertModal, "Erro ao adicionar o produto, tenta novamente mais tarde", "alert-warning")
@@ -169,10 +209,53 @@ function getListBtnEdit(){
     });
 }
 
+let productIdInfo: string;
 function editModal(btnElement: Element){
-    const productInfo = btnElement.parentElement?.parentElement?.children!;
+    clearModal();
+    const productInfo = btnElement.parentElement!.parentElement!.children!;
+    const productCategoryId = btnElement.parentElement!.parentElement!.getAttribute("id-category")!;
+
+    productIdInfo = btnElement.parentElement!.parentElement!.id;
+
     modalHeader.firstElementChild!.textContent = 'Editar Produto';
+
     inputProductName.value = productInfo[0].textContent!;
     textProductResume.value = productInfo[1].textContent!;
+    selectProductCategory.value = productCategoryId;
     inputProductPrice.value = productInfo[2].lastElementChild?.textContent!;
+
+    modalFooter.lastElementChild!.lastElementChild!.textContent = 'Editar Produto'
+    modalFooter.lastElementChild!.id = "btn-edit-product";
+}
+
+function editProduct(idProduct: string, name: string, resume: string, category_id: string, price: number) {
+    try {
+        showLoading(true, "btn-edit-product");
+        setTimeout(async () => {
+            const res = await fetch(`${supabaseURL}/rest/v1/products?id=eq.${idProduct}`, {
+                method: "PATCH",
+                headers: {
+                  apikey: supabaseKey,
+                  Authorization: `Bearer ${supabaseKey}`,
+                  "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    name,
+                    resume,
+                    category_id,
+                    price
+                })
+            });
+
+            if(res.ok) {
+                showLoading(false, "btn-edit-product");
+                showAlert(alertModal, "Produto Editado com sucesso!", "alert-success");
+                listProducts();
+                setTimeout(() => btnModalClose.click(), 1000);
+            }
+        }, 1000)
+
+    } catch (error) {
+        showAlert(alertModal, "Erro ao editar o produto, tenta novamente mais tarde", "alert-warning")
+    }
 }

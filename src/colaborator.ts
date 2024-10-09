@@ -1,11 +1,6 @@
-import { showPlaceholderLoading } from "./fakePlaceholder";
-import { addProduct, verifyExistisCart } from "./cart";
-import { productsFilter } from "./filter";
-import { getCategories } from "./getCategorie";
-import { getProducts } from "./getProducts";
-import { showCategories } from "./showCategories";
-import { showEmptyState } from "./showEmptyState";
-import { showProducts } from "./showProducts";
+import {getCategories, getProducts, showProducts, showEmptyState, showCategories, productsFilter, showPlaceholderLoading} from '../src/ultils'
+import { verifyExistisCart, addProduct } from './cart';
+
 
 const collablist: string[] = ['henrique.rosa@v8.tech'];
     

@@ -1,10 +1,5 @@
-import { getCategories } from "./getCategorie";
-import { getProducts } from "./getProducts";
-import { showCategories } from "./showCategories";
-import { showEmptyState } from "./showEmptyState";
-import { showProducts } from "./showProducts";
-import { productsFilter } from "./filter";
-import { lockRoute } from "./lockRoute";
+import {getCategories, getProducts, showProducts, showEmptyState, showCategories, productsFilter, showPlaceholderLoading} from '../src/ultils'
+
 
 const supabaseURL: string = import.meta.env.VITE_SUPABASE_URL;
 const supabaseKey: string = import.meta.env.VITE_SUPABASE_ANON_KEY;
@@ -23,11 +18,13 @@ if(isAdmin == undefined) {
     window.location.href = './colaborador.html';
 }
 
+const insertProducts: htmlElement = document.querySelector("#insert-products")!;
+showPlaceholderLoading(insertProducts);
+
 type htmlInput = HTMLInputElement;
 type htmlElement = HTMLElement;
 type alertType = "alert-warning" | "alert-success"
 
-const insertProducts: htmlElement = document.querySelector("#insert-products")!;
 const btnNewProduct: htmlElement = document.querySelector("#btn-new-product")!;
 const btnAddProduct: htmlElement = document.querySelector("#btn-add-product")!;
 const inputProductName: htmlInput = document.querySelector("#input-name")!;
@@ -43,6 +40,7 @@ const searchInput: HTMLInputElement = document.querySelector("#input-search")!;
 const products = await getProducts();
 
 btnNewProduct.addEventListener("click", addModal);
+
 
 function clearModal() {
     alertModal.classList.add('d-none');

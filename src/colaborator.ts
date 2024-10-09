@@ -1,3 +1,4 @@
+import { addProduct, verifyExistisCart } from "./cart";
 import { productsFilter } from "./filter";
 import { getCategories } from "./getCategorie";
 import { getProducts } from "./getProducts";
@@ -9,6 +10,10 @@ const categories = await getCategories();
 const selectCategories: HTMLElement = document.querySelector("#select-categories")!;
 const insertProducts: HTMLElement = document.querySelector("#insert-products")!;
 const searchInput: HTMLInputElement = document.querySelector("#input-search")!;
+const btnCart: HTMLElement = document.querySelector("#cart-button")!;
+
+
+verifyExistisCart()
 
 if (categories !== null) {
   showCategories(categories, selectCategories);
@@ -56,5 +61,16 @@ if (products !== null) {
 } else {
   showEmptyState(insertProducts, "Nenhum produto encontrado na base de dados");
 }
+
+const btnAdd = document.querySelectorAll("#add-button") 
+
+btnAdd.forEach(btn => {
+  btn.addEventListener('click' ,(e:any) => {
+    addProduct(e.target.parentElement.getAttribute('productId'))
+    btnCart.click()
+    
+  })
+})
+
 
 

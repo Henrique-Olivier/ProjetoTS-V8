@@ -10,7 +10,7 @@ function showButtons(isManager: boolean) {
     `
   };
 
-  return '<button class="btn btn-primary">Add</button>';
+  return '<button class="btn btn-primary" id="add-button" >Add</button>';
 }
 
 export function showProducts(products: Product[], elemento: HTMLElement, isManager: boolean = false) {
@@ -23,7 +23,7 @@ export function showProducts(products: Product[], elemento: HTMLElement, isManag
                     <div id="${product.id}" id-category="${product.category_id}" class="card-body">
                       <h5 class="card-title">${product.name}</h5>
                       <p class="card-text">${product.resume}</p>
-                      <div class="d-flex align-items-center" style="gap: 20px;">
+                      <div  productId='${product.id}' class="d-flex align-items-center" style="gap: 20px;">
                         ${showButtons(isManager)}
                         <span>${product.price.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</span>
                       </div>

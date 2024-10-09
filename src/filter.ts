@@ -5,6 +5,8 @@ export function productsFilter(input: HTMLInputElement ,products: Product[], cat
     let filteredProducts: Product[] = products
     
     let toSearch =  removeAccents(input.value);
+    console.log(toSearch)
+
 
     if(toSearch) {
         const normalizedSearch = removeAccents(toSearch.toLowerCase())

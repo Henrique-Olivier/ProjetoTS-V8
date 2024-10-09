@@ -7,6 +7,20 @@ import { showCategories } from "./showCategories";
 import { showEmptyState } from "./showEmptyState";
 import { showProducts } from "./showProducts";
 
+const collablist: string[] = ['henrique.rosa@v8.tech'];
+    
+const localStorageItem = localStorage.getItem('sb-rowqaxeeqevtmaoxkqfv-auth-token');
+if(localStorageItem == null) {
+  window.location.href = './login.html';
+}
+
+const userInfo = JSON.parse(localStorageItem!);
+
+const isCollab = collablist.find(collab => collab === userInfo.user.email);
+if(isCollab == undefined) {
+    window.location.href = './gestor.html';
+}
+
 const categories = await getCategories();
 const selectCategories: HTMLElement = document.querySelector("#select-categories")!;
 const insertProducts: HTMLElement = document.querySelector("#insert-products")!;

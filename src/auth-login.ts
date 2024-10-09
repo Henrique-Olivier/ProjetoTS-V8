@@ -36,7 +36,7 @@ export function mainLogin() {
         const divLoadingIcon = btnLogin.firstElementChild as htmlElement;
         const p = btnLogin.lastElementChild as htmlElement;
         divLoadingIcon.classList.toggle('d-none');
-        p.textContent = 'Entrando...'
+        p.textContent = 'Entrando...';
 
         // faz o loading "parar"
         setTimeout(() => {

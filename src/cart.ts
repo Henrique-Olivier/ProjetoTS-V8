@@ -132,13 +132,13 @@ function showAlert(type: string) {
     successAlert.classList.replace("d-none", "d-block");
     setTimeout(() => {
       successAlert.classList.replace("d-block", "d-none");
-    }, 15000);
+    }, 7000);
   }
   if (type == "error") {
     errorAlert.classList.replace("d-none", "d-block");
     setTimeout(() => {
       errorAlert.classList.replace("d-block", "d-none");
-    }, 15000);
+    }, 10000);
   }
   if (type == "max") {
     maxAlert.classList.replace("d-none", "d-block");
@@ -212,8 +212,8 @@ async function sentOrder() {
       throw new Error(`Erro ao registrar pedido: ${res.status}`);
     }
 
-    showAlert('success')
-    setTimeout(clearCart, 15500)
+    clearCart()
+    showAlert("success");
   } catch (error) {
     console.error(error);
     showAlert("error");
@@ -221,4 +221,22 @@ async function sentOrder() {
 }
 
 const btnSent = document.querySelector("#sent-order")!;
-btnSent.addEventListener("click", sentOrder);
+
+function showLoading() {
+  btnSent.innerHTML = `
+  <span class="spinner-border spinner-border-sm" aria-hidden="true"></span>
+  <span role="status">Processando pedido...</span>
+`;
+  btnSent.setAttribute("disabled", "");
+}
+
+function endLoading() {
+  btnSent.innerHTML = `Fechar pedido`;
+  btnSent.removeAttribute("disabled");
+}
+
+btnSent.addEventListener("click", () => {
+  showLoading();
+  sentOrder()
+  setTimeout(endLoading, 1000);
+});

@@ -1,3 +1,4 @@
+import { showPlaceholderLoading } from "./fakePlaceholder";
 import { addProduct, verifyExistisCart } from "./cart";
 import { productsFilter } from "./filter";
 import { getCategories } from "./getCategorie";
@@ -12,6 +13,7 @@ const insertProducts: HTMLElement = document.querySelector("#insert-products")!;
 const searchInput: HTMLInputElement = document.querySelector("#input-search")!;
 const btnCart: HTMLElement = document.querySelector("#cart-button")!;
 
+showPlaceholderLoading(insertProducts);
 
 verifyExistisCart()
 
@@ -19,58 +21,57 @@ if (categories !== null) {
   showCategories(categories, selectCategories);
 }
 
+setTimeout(async () => {
 
-const products = await getProducts();
-if (products !== null) {
-  showProducts(products, insertProducts);
-
-  searchInput.addEventListener("keyup", () => {
-    const filteredProducts = productsFilter(
-      searchInput,
-      products,
-      selectCategories as HTMLSelectElement
-    );
-
-    if (filteredProducts.length == 0) {
-      showEmptyState(
-        insertProducts,
-        "Nenhum produto encontrado para esse filtro."
+  const products = await getProducts();
+  if (products !== null) {
+    showProducts(products, insertProducts);
+  
+    searchInput.addEventListener("keyup", () => {
+      const filteredProducts = productsFilter(
+        searchInput,
+        products,
+        selectCategories as HTMLSelectElement
       );
-    } else {
-      showProducts(filteredProducts, insertProducts);
-    }
-  });
-
-  selectCategories.addEventListener("change", () => {
-    const filteredProducts = productsFilter(
-      searchInput,
-      products,
-      selectCategories as HTMLSelectElement
-    );
-
-    if (filteredProducts.length == 0) {
-      showEmptyState(
-        insertProducts,
-        "Nenhum produto encontrado para esse filtro."
+  
+      if (filteredProducts.length == 0) {
+        showEmptyState(
+          insertProducts,
+          "Nenhum produto encontrado para esse filtro."
+        );
+      } else {
+        showProducts(filteredProducts, insertProducts);
+      }
+    });
+  
+    selectCategories.addEventListener("change", () => {
+      const filteredProducts = productsFilter(
+        searchInput,
+        products,
+        selectCategories as HTMLSelectElement
       );
-    } else {
-      showProducts(filteredProducts, insertProducts);
-    }
-  });
-
-} else {
-  showEmptyState(insertProducts, "Nenhum produto encontrado na base de dados");
-}
-
-const btnAdd = document.querySelectorAll("#add-button") 
-
-btnAdd.forEach(btn => {
-  btn.addEventListener('click' ,(e:any) => {
-    addProduct(e.target.parentElement.getAttribute('productId'))
-    btnCart.click()
-    
+  
+      if (filteredProducts.length == 0) {
+        showEmptyState(
+          insertProducts,
+          "Nenhum produto encontrado para esse filtro."
+        );
+      } else {
+        showProducts(filteredProducts, insertProducts);
+      }
+    });
+  
+  } else {
+    showEmptyState(insertProducts, "Nenhum produto encontrado na base de dados");
+  }
+  const btnAdd = document.querySelectorAll("#add-button") 
+  
+  btnAdd.forEach(btn => {
+    btn.addEventListener('click' ,(e:any) => {
+      addProduct(e.target.parentElement.getAttribute('productId'))
+      btnCart.click()
+      
+    })
   })
-})
 
-
-
+}, 1500)

@@ -132,13 +132,13 @@ function showAlert(type: string) {
     successAlert.classList.replace("d-none", "d-block");
     setTimeout(() => {
       successAlert.classList.replace("d-block", "d-none");
-    }, 5000);
+    }, 15000);
   }
   if (type == "error") {
     errorAlert.classList.replace("d-none", "d-block");
     setTimeout(() => {
       errorAlert.classList.replace("d-block", "d-none");
-    }, 5000);
+    }, 15000);
   }
   if (type == "max") {
     maxAlert.classList.replace("d-none", "d-block");
@@ -149,13 +149,13 @@ function showAlert(type: string) {
 }
 
 function clearCart() {
-    localStorage.setItem('UserCart', JSON.stringify([]))
-    localStorage.setItem('totalCart', '')
-    showProducts();
+  localStorage.setItem("UserCart", JSON.stringify([]));
+  localStorage.setItem("totalCart", "");
+  showProducts();
 }
 
 const btnClear = document.querySelector("#clear-cart")!;
-btnClear.addEventListener('click', clearCart)  
+btnClear.addEventListener("click", clearCart);
 
 function addBtnFunctionality() {
   const removeBtns = document.querySelectorAll("#remove-button");
@@ -182,17 +182,43 @@ function addBtnFunctionality() {
       removeAll(e.target.parentElement.getAttribute("idProduto"));
     });
   });
-
-
 }
 
-function sentOrder () {
-    const products = JSON.parse(localStorage.getItem('UserCart')!)
-    const totalValue = Number(localStorage.getItem('totalCart'))
-    const userInformatios = JSON.parse(localStorage.getItem('sb-rowqaxeeqevtmaoxkqfv-auth-token')!)
-    const userId = userInformatios.user.id
-   
+async function sentOrder() {
+  const products = JSON.parse(localStorage.getItem("UserCart")!);
+  const total_value = Number(localStorage.getItem("totalCart"));
+  const userInformatios = JSON.parse(
+    localStorage.getItem("sb-rowqaxeeqevtmaoxkqfv-auth-token")!
+  );
+  const user_id = userInformatios.user.id;
+  const supabaseURL: string = import.meta.env.VITE_SUPABASE_URL;
+  const supabaseKey: string = import.meta.env.VITE_SUPABASE_ANON_KEY;
+
+  try {
+    const res = await fetch(supabaseURL + "rest/v1/orders", {
+      method: "POST",
+      headers: {
+        apiKey: supabaseKey,
+        "Content-type": "application/json",
+      },
+      body: JSON.stringify({
+        products,
+        total_value,
+        user_id,
+      }),
+    });
+
+    if (!res.ok) {
+      throw new Error(`Erro ao registrar pedido: ${res.status}`);
+    }
+
+    showAlert('success')
+    setTimeout(clearCart, 15500)
+  } catch (error) {
+    console.error(error);
+    showAlert("error");
+  }
 }
 
-const btnSent = document.querySelector("#sent-order")!
-btnSent.addEventListener('click', sentOrder)
+const btnSent = document.querySelector("#sent-order")!;
+btnSent.addEventListener("click", sentOrder);

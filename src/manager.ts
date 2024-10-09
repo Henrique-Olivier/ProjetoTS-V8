@@ -1,3 +1,4 @@
+import { showPlaceholderLoading } from "./fakePlaceholder";
 import { getCategories } from "./getCategorie";
 import { getProducts } from "./getProducts";
 import { showCategories } from "./showCategories";
@@ -25,6 +26,8 @@ const modalBody: htmlElement = document.querySelector(".modal-body")!;
 const modalFooter: htmlElement = document.querySelector(".modal-footer")!;
 
 btnNewProduct.addEventListener("click", addModal);
+
+showPlaceholderLoading(insertProducts);
 
 function clearModal(clearRemoveModal?:boolean) {
     if(clearRemoveModal){
@@ -69,16 +72,18 @@ if (categories !== null ) {
     showCategories(categories, selectProductCategory);
 }
 
-async function listProducts() {
-    const produtos = await getProducts();
-
-    if (produtos !== null ) {
-        showProducts(produtos, insertProducts, true);
-        getListBtnEdit();
-        getListBtnRemove();
-    } else {
-        showEmptyState(insertProducts, "Nenhum produto encontrado para esse filtro.");
-    }
+function listProducts() {
+    setTimeout(async () => {
+        const produtos = await getProducts();
+    
+        if (produtos !== null ) {
+            showProducts(produtos, insertProducts, true);
+            getListBtnEdit();
+            getListBtnRemove();
+        } else {
+            showEmptyState(insertProducts, "Nenhum produto encontrado para esse filtro.");
+        }
+    },1500)
 }
 listProducts()
 

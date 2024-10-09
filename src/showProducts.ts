@@ -6,7 +6,7 @@ function showButtons(isManager: boolean) {
   if(isManager) {
     return `
     <button class="btn btn-primary btn-edit-product" data-bs-toggle="modal" data-bs-target="#exampleModal">Edit</button>
-    <button class="btn btn-danger">Remove</button>
+    <button class="btn btn-danger btn-remove-product" data-bs-toggle="modal" data-bs-target="#exampleModal">Remove</button>
     `
   };
 

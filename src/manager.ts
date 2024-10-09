@@ -9,7 +9,7 @@ const supabaseKey: string = import.meta.env.VITE_SUPABASE_ANON_KEY;
 
 type htmlInput = HTMLInputElement;
 type htmlElement = HTMLElement;
-type alertType = "alert-warning" | "alert-success"
+type alertType = "alert-warning" | "alert-success";
 
 const insertProducts: htmlElement = document.querySelector("#insert-products")!;
 const btnNewProduct: htmlElement = document.querySelector("#btn-new-product")!;
@@ -21,16 +21,25 @@ const inputProductPrice: htmlInput = document.querySelector("#input-price")!;
 const alertModal: htmlElement = document.querySelector("#alert-modal")!;
 const modalHeader: htmlElement = document.querySelector(".modal-header")!;
 const btnModalClose = modalHeader.lastElementChild as HTMLButtonElement;
+const modalBody: htmlElement = document.querySelector(".modal-body")!;
 const modalFooter: htmlElement = document.querySelector(".modal-footer")!;
 
 btnNewProduct.addEventListener("click", addModal);
 
-function clearModal() {
+function clearModal(clearRemoveModal?:boolean) {
+    if(clearRemoveModal){
+        return alertModal.classList.add('d-none');
+    }
     alertModal.classList.add('d-none');
+    modalBody.children[0].classList.remove('d-none');
     inputProductName.value = '';
     textProductResume.value = '';
     selectProductCategory.value = '';
     inputProductPrice.value = '';
+
+    modalBody.children[1].textContent = '';
+    modalBody.children[2].textContent = '';
+    modalBody.children[3].textContent = '';
 }
 
 function addModal(){
@@ -66,6 +75,7 @@ async function listProducts() {
     if (produtos !== null ) {
         showProducts(produtos, insertProducts, true);
         getListBtnEdit();
+        getListBtnRemove();
     } else {
         showEmptyState(insertProducts, "Nenhum produto encontrado para esse filtro.");
     }
@@ -80,6 +90,10 @@ function validateProduct() {
     const categorySelectId = selectProductCategory.options[selectProductCategory.selectedIndex];
     const categorytId = categorySelectId.getAttribute("value")!;
     const [isPriceValid, price] = validateInputPrice(inputProductPrice.value);
+
+    if(modalFooter.lastElementChild!.id === "btn-remove-product") {
+        return removeProduct(productId) 
+    }
 
     if(!isNameValid) {
         return showAlert(alertModal, "Digite um nome com mais de 3 caracteres", "alert-warning");
@@ -103,7 +117,7 @@ function validateProduct() {
 
     if(modalFooter.lastElementChild!.id === "btn-add-product") {
         addNewProduct(inputProductName.value, textProductResume.value, categorytId, price);
-    } else {
+    } else if(modalFooter.lastElementChild!.id === "btn-edit-product") {
         editProduct(productIdInfo ,inputProductName.value, textProductResume.value, categorytId, price)
     }
 }
@@ -145,15 +159,17 @@ function showAlert(element: HTMLElement, message: string, alertType: alertType) 
     }
 }
 
-type btnType = "btn-add-product" | "btn-edit-product";
+type btnType = "btn-add-product" | "btn-edit-product" | "btn-remove-product";
 function showLoading(disabled: boolean, btnType: btnType){
     const btnModal = document.querySelector(`#${btnType}`)!;
     btnModal.firstElementChild!.classList.toggle("d-none");
 
     if(btnType === "btn-add-product") {
-        btnModal.lastElementChild!.textContent = "Adicionando..."
+        btnModal.lastElementChild!.textContent = "Adicionando...";
+    } else if(btnType === "btn-edit-product") {
+        btnModal.lastElementChild!.textContent = "Editando...";
     } else {
-        btnModal.lastElementChild!.textContent = "Editando..."
+        btnModal.lastElementChild!.textContent = "Removendo..."
     }
 
     if(disabled) {
@@ -161,8 +177,11 @@ function showLoading(disabled: boolean, btnType: btnType){
     } else if(btnType === "btn-add-product") {
         btnModal.lastElementChild!.textContent = "Adicionar";
         btnModal.removeAttribute("disabled");
-    } else {
+    } else if(btnType === "btn-edit-product") {
         btnModal.lastElementChild!.textContent = "Editar";
+        btnModal.removeAttribute("disabled");
+    } else {
+        btnModal.lastElementChild!.textContent = "Remover";
         btnModal.removeAttribute("disabled");
     }
 
@@ -224,7 +243,7 @@ function editModal(btnElement: Element){
     selectProductCategory.value = productCategoryId;
     inputProductPrice.value = productInfo[2].lastElementChild?.textContent!;
 
-    modalFooter.lastElementChild!.lastElementChild!.textContent = 'Editar Produto'
+    modalFooter.lastElementChild!.lastElementChild!.textContent = 'Editar Produto';
     modalFooter.lastElementChild!.id = "btn-edit-product";
 }
 
@@ -257,5 +276,59 @@ function editProduct(idProduct: string, name: string, resume: string, category_i
 
     } catch (error) {
         showAlert(alertModal, "Erro ao editar o produto, tenta novamente mais tarde", "alert-warning")
+    }
+}
+
+function getListBtnRemove() {
+    const listBtnRemove = document.querySelectorAll(".btn-remove-product");
+    listBtnRemove.forEach(btnRemove => {
+        btnRemove.addEventListener("click", () => {
+            editRemoveModal(btnRemove);
+        })
+    });
+}
+
+let productId: string;
+function editRemoveModal(btnRemove: Element) {
+    clearModal(true);
+    const productInfo = btnRemove.parentElement!.parentElement!.children!;
+    productId = btnRemove.parentElement!.parentElement!.id;
+
+    modalHeader.firstElementChild!.textContent = 'Deseja remover este produto?';
+
+    const productTitle = productInfo[0].textContent!;
+    const productResume = productInfo[1].textContent!;
+    const productPrice = productInfo[2].lastElementChild!.textContent!;
+    modalBody.children[0].classList.add("d-none");
+    modalBody.children[1].textContent = `Titulo: ${productTitle}`;
+    modalBody.children[2].textContent = `Resumo: ${productResume}`;
+    modalBody.children[3].textContent = `Preço: ${productPrice}`;
+
+    modalFooter.lastElementChild!.lastElementChild!.textContent = 'Remover Produto';
+    modalFooter.lastElementChild!.id = "btn-remove-product";
+}
+
+function removeProduct(productId: string) {
+    try {
+        showLoading(true, "btn-remove-product");
+        setTimeout(async () => {
+            const res = await fetch(`${supabaseURL}/rest/v1/products?id=eq.${productId}`, {
+                method: "DELETE",
+                headers: {
+                  apikey: supabaseKey,
+                  "Content-Type": "application/json",
+                }
+            });
+
+            if(res.ok) {
+                showLoading(false, "btn-remove-product");
+                showAlert(alertModal, "Produto excluído com sucesso!", "alert-success");
+                listProducts();
+                setTimeout(() => btnModalClose.click(), 1000);
+            }
+        }, 1000)
+
+    } catch (error) {
+        showAlert(alertModal, "Erro ao excluir o produto, tenta novamente mais tarde", "alert-warning")
     }
 }

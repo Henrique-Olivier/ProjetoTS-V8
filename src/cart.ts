@@ -81,7 +81,7 @@ export function showProducts() {
                     }</span> <!-- Mostra a quantidade -->
                     <button class="btn btn-link" id='plus-one-button'>+</button>
                 </div>
-                <span>R$ ${findedProduct.price.toLocaleString("pt-BR", {
+                <span>${findedProduct.price.toLocaleString("pt-BR", {
                   style: "currency",
                   currency: "BRL",
                 })}</span>

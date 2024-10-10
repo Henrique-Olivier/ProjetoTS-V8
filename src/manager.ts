@@ -37,7 +37,8 @@ const btnModalClose = modalHeader.lastElementChild as HTMLButtonElement;
 const modalFooter: htmlElement = document.querySelector(".modal-footer")!;
 const selectCategories: HTMLElement = document.querySelector("#select-categories")!;
 const searchInput: HTMLInputElement = document.querySelector("#input-search")!;
-const products = await getProducts();
+const modalBody: htmlElement = document.querySelector(".modal-body")!;
+let products = await getProducts();
 
 btnNewProduct.addEventListener("click", addModal);
 
@@ -79,9 +80,14 @@ if (categories !== null ) {
 }
 
 async function listProducts() {
-    if (products !== null ) {
-        showProducts(products, insertProducts, true);
+    showPlaceholderLoading(insertProducts);
+   
+    const produtos = await getProducts();
+
+    if (produtos !== null ) {
+        showProducts(produtos, insertProducts, true);
         getListBtnEdit();
+        getListBtnRemove();
     } else {
         showEmptyState(insertProducts, "Nenhum produto encontrado na base de dados");
     }
@@ -97,6 +103,10 @@ function validateProduct() {
     const categorySelectId = selectProductCategory.options[selectProductCategory.selectedIndex];
     const categorytId = categorySelectId.getAttribute("value")!;
     const [isPriceValid, price] = validateInputPrice(inputProductPrice.value);
+
+    if(modalFooter.lastElementChild!.id === "btn-remove-product") {
+        return removeProduct(productId) 
+    }
 
     if(!isNameValid) {
         return showAlert(alertModal, "Digite um nome com mais de 3 caracteres", "alert-warning");
@@ -162,7 +172,7 @@ function showAlert(element: HTMLElement, message: string, alertType: alertType) 
     }
 }
 
-type btnType = "btn-add-product" | "btn-edit-product";
+type btnType = "btn-add-product" | "btn-edit-product" | "btn-remove-product";
 function showLoading(disabled: boolean, btnType: btnType){
     const btnModal = document.querySelector(`#${btnType}`)!;
     btnModal.firstElementChild!.classList.toggle("d-none");
@@ -312,3 +322,51 @@ if (products !== null) {
           }
         });
 } 
+
+function getListBtnRemove() {
+    const listBtnRemove = document.querySelectorAll(".btn-remove-product");
+    listBtnRemove.forEach(btnRemove => {
+        btnRemove.addEventListener("click", () => {
+            editRemoveModal(btnRemove);
+        })
+    });
+}
+let productId: string;
+function editRemoveModal(btnRemove: Element) {
+    clearModal();
+    const productInfo = btnRemove.parentElement!.parentElement!.children!;
+    productId = btnRemove.parentElement!.parentElement!.id;
+    modalHeader.firstElementChild!.textContent = 'Deseja remover este produto?';
+    const productTitle = productInfo[0].textContent!;
+    const productResume = productInfo[1].textContent!;
+    const productPrice = productInfo[2].lastElementChild!.textContent!;
+    modalBody.children[0].classList.add("d-none");
+    modalBody.children[1].textContent = `Titulo: ${productTitle}`;
+    modalBody.children[2].textContent = `Resumo: ${productResume}`;
+    modalBody.children[3].textContent = `Preço: ${productPrice}`;
+    modalFooter.lastElementChild!.lastElementChild!.textContent = 'Remover Produto';
+    modalFooter.lastElementChild!.id = "btn-remove-product";
+}
+function removeProduct(productId: string) {
+    try {
+        showLoading(true, "btn-remove-product");
+        setTimeout(async () => {
+            const res = await fetch(`${supabaseURL}/rest/v1/products?id=eq.${productId}`, {
+                method: "DELETE",
+                headers: {
+                  apikey: supabaseKey,
+                  "Content-Type": "application/json",
+                }
+            });
+
+            if(res.ok) {
+                showLoading(false, "btn-remove-product");
+                showAlert(alertModal, "Produto excluído com sucesso!", "alert-success");
+                listProducts();
+                setTimeout(() => btnModalClose.click(), 1000);
+            }
+        }, 1000)
+    } catch (error) {
+        showAlert(alertModal, "Erro ao excluir o produto, tenta novamente mais tarde", "alert-warning")
+    }
+}

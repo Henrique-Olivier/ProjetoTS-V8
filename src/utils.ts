@@ -190,6 +190,9 @@ export function verifyAccess(accessType: accessType){
   const localStorageItem = localStorage.getItem('sb-rowqaxeeqevtmaoxkqfv-auth-token');
   const userInfo = JSON.parse(localStorageItem!);
   if(!localStorageItem) {
+    if(window.location.href !== "http://localhost:5173/index.html") {
+      return window.location.href = './index.html'
+    }
     return;
   } else {
     

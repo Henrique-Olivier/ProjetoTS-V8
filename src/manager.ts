@@ -1,31 +1,11 @@
-import {
-  getCategories,
-  getProducts,
-  showCategories,
-  showProducts,
-  showEmptyState,
-  showPlaceholderLoading,
-  productsFilter,
-} from "./utils";
+
+import { getCategories, getProducts, showCategories, showProducts, showEmptyState, showPlaceholderLoading, productsFilter, logout, verifyAccess } from "./utils";
+
 
 const supabaseURL: string = import.meta.env.VITE_SUPABASE_URL;
 const supabaseKey: string = import.meta.env.VITE_SUPABASE_ANON_KEY;
 
-const adminlist: string[] = ["matheus.castro@v8.tech"];
-
-const localStorageItem = localStorage.getItem(
-  "sb-rowqaxeeqevtmaoxkqfv-auth-token"
-);
-if (localStorageItem == null) {
-  window.location.href = "./login.html";
-}
-
-const userInfo = JSON.parse(localStorageItem!);
-
-const isAdmin = adminlist.find((admin) => admin === userInfo.user.email);
-if (isAdmin == undefined) {
-  window.location.href = "./colaborador.html";
-}
+verifyAccess("admin");
 
 type htmlInput = HTMLInputElement;
 type htmlElement = HTMLElement;
@@ -47,7 +27,10 @@ const modalFooter: htmlElement = document.querySelector(".modal-footer")!;
 const selectCategories: HTMLElement =
   document.querySelector("#select-categories")!;
 const searchInput: HTMLInputElement = document.querySelector("#input-search")!;
+const btnLogout = document.querySelector(".btn-link")!;
 const products = await getProducts();
+
+btnLogout.addEventListener("click", logout);
 
 btnNewProduct.addEventListener("click", addModal);
 

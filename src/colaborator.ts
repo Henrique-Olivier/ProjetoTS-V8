@@ -1,26 +1,16 @@
-import { getCategories, getProducts, showCategories, showProducts, showEmptyState, showPlaceholderLoading, productsFilter } from "./utils";
+import { getCategories, getProducts, showCategories, showProducts, showEmptyState, showPlaceholderLoading, productsFilter, logout, verifyAccess } from "./utils";
 import { addProduct, verifyExistisCart } from "./cart";
 
-
-const collablist: string[] = ['henrique.rosa@v8.tech'];
-    
-const localStorageItem = localStorage.getItem('sb-rowqaxeeqevtmaoxkqfv-auth-token');
-if(localStorageItem == null) {
-  window.location.href = './login.html';
-}
-
-const userInfo = JSON.parse(localStorageItem!);
-
-const isCollab = collablist.find(collab => collab === userInfo.user.email);
-if(isCollab == undefined) {
-    window.location.href = './gestor.html';
-}
+verifyAccess("collab");
 
 const categories = await getCategories();
 const selectCategories: HTMLElement = document.querySelector("#select-categories")!;
 const insertProducts: HTMLElement = document.querySelector("#insert-products")!;
 const searchInput: HTMLInputElement = document.querySelector("#input-search")!;
 const btnCart: HTMLElement = document.querySelector("#cart-button")!;
+const btnLogout = document.querySelector(".btn-link")!;
+
+btnLogout.addEventListener("click", logout);
 
 showPlaceholderLoading(insertProducts, 'colaborator');
 

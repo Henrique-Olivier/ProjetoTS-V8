@@ -1,6 +1,9 @@
 import { supabase } from "./supabase";
+import { verifyAccess } from "./utils";
 
 export function mainLogin() {
+    verifyAccess("admin");
+    verifyAccess("collab");
     type htmlElement = Element;
     type alertType = "alert-danger" | "alert-success";
     type htmlInput = HTMLInputElement;
@@ -33,6 +36,7 @@ export function mainLogin() {
 
     //mostra o loading "entrando..."
     function showLoading(){
+        btnLogin.setAttribute("disabled", "true");
         const divLoadingIcon = btnLogin.firstElementChild as htmlElement;
         const p = btnLogin.lastElementChild as htmlElement;
         divLoadingIcon.classList.toggle('d-none');

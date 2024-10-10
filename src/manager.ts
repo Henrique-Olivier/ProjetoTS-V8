@@ -1,10 +1,4 @@
-import { getCategories } from "./getCategorie";
-import { getProducts } from "./getProducts";
-import { showCategories } from "./showCategories";
-import { showEmptyState } from "./showEmptyState";
-import { showProducts } from "./showProducts";
-import { productsFilter } from "./filter";
-import { showPlaceholderLoading } from "./fakePlaceholder";
+import { getCategories, getProducts, showCategories, showProducts, showEmptyState, showPlaceholderLoading, productsFilter } from "./utils";
 
 const supabaseURL: string = import.meta.env.VITE_SUPABASE_URL;
 const supabaseKey: string = import.meta.env.VITE_SUPABASE_ANON_KEY;
@@ -91,13 +85,18 @@ if (categories !== null ) {
 }
 
 async function listProducts() {
-    if (products !== null ) {
-        showProducts(products, insertProducts, true);
-        getListBtnEdit();
-        getListBtnRemove();
-    } else {
-        showEmptyState(insertProducts, "Nenhum produto encontrado na base de dados");
-    }
+    showPlaceholderLoading(insertProducts);
+
+    const produtos = await getProducts();
+    setTimeout(() =>{
+            if (produtos !== null ) {
+                showProducts(produtos, insertProducts, true);
+                getListBtnEdit();
+                getListBtnRemove();
+            } else {
+                showEmptyState(insertProducts, "Nenhum produto encontrado na base de dados");
+            }
+    }, 1000)
 }
 
 listProducts()

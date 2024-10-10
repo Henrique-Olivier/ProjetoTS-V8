@@ -33,6 +33,7 @@ export function mainLogin() {
 
     //mostra o loading "entrando..."
     function showLoading(){
+        btnLogin.setAttribute("disabled", "true");
         const divLoadingIcon = btnLogin.firstElementChild as htmlElement;
         const p = btnLogin.lastElementChild as htmlElement;
         divLoadingIcon.classList.toggle('d-none');

@@ -177,3 +177,31 @@ function findImgByCategory(id: string) {
     return findCategory?.image_url
 }
 
+export function logout(){
+  localStorage.removeItem("sb-rowqaxeeqevtmaoxkqfv-auth-token");
+  window.location.href = './index.html';
+}
+
+type accessType = "admin" | "collab";
+export function verifyAccess(accessType: accessType){
+  const adminlist: string[] = ['matheus.castro@v8.tech'];
+  const collablist: string[] = ['henrique.rosa@v8.tech'];
+
+  const localStorageItem = localStorage.getItem('sb-rowqaxeeqevtmaoxkqfv-auth-token');
+  if(!localStorageItem) {
+    return window.location.href = './login.html';
+  }
+  const userInfo = JSON.parse(localStorageItem!);
+
+  if(accessType === "admin") {
+    const isAdmin = adminlist.find(admin => admin === userInfo.user.email);
+    if(!isAdmin) {
+      return window.location.href = './colaborador.html';
+    }
+  } else {
+    const isCollab = collablist.find(collab => collab === userInfo.user.email);
+    if(!isCollab) {
+      return window.location.href = './gestor.html';
+    }
+  }
+}

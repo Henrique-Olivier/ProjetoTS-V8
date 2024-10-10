@@ -1,4 +1,4 @@
-import { getProducts } from "./getProducts";
+import { getProducts } from "./utils";
 
 const products = await getProducts()!;
 

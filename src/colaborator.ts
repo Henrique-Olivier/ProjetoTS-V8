@@ -1,11 +1,6 @@
-import { showPlaceholderLoading } from "./fakePlaceholder";
+import { getCategories, getProducts, showCategories, showProducts, showEmptyState, showPlaceholderLoading, productsFilter } from "./utils";
 import { addProduct, verifyExistisCart } from "./cart";
-import { productsFilter } from "./filter";
-import { getCategories } from "./getCategorie";
-import { getProducts } from "./getProducts";
-import { showCategories } from "./showCategories";
-import { showEmptyState } from "./showEmptyState";
-import { showProducts } from "./showProducts";
+
 
 const collablist: string[] = ['henrique.rosa@v8.tech'];
     

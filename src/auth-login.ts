@@ -1,6 +1,9 @@
 import { supabase } from "./supabase";
+import { verifyAccess } from "./utils";
 
 export function mainLogin() {
+    verifyAccess("admin");
+    verifyAccess("collab");
     type htmlElement = Element;
     type alertType = "alert-danger" | "alert-success";
     type htmlInput = HTMLInputElement;

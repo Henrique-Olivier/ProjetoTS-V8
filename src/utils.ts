@@ -188,20 +188,26 @@ export function verifyAccess(accessType: accessType){
   const collablist: string[] = ['henrique.rosa@v8.tech'];
 
   const localStorageItem = localStorage.getItem('sb-rowqaxeeqevtmaoxkqfv-auth-token');
-  if(!localStorageItem) {
-    return window.location.href = './login.html';
-  }
   const userInfo = JSON.parse(localStorageItem!);
-
-  if(accessType === "admin") {
-    const isAdmin = adminlist.find(admin => admin === userInfo.user.email);
-    if(!isAdmin) {
-      return window.location.href = './colaborador.html';
-    }
+  if(!localStorageItem) {
+    return;
   } else {
-    const isCollab = collablist.find(collab => collab === userInfo.user.email);
-    if(!isCollab) {
-      return window.location.href = './gestor.html';
+    
+    if(accessType === "admin") {
+      const isAdmin = adminlist.find(admin => admin === userInfo.user.email);
+      if(!isAdmin) {
+        return window.location.href = './colaborador.html';
+      }
     }
+  
+    if(accessType === "collab") {
+      const isCollab = collablist.find(collab => collab === userInfo.user.email);
+      if(!isCollab) {
+        return window.location.href = './gestor.html';
+      }
+    }
+
   }
+
+  
 }

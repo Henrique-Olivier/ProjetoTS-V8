@@ -22,7 +22,7 @@ const insertProducts: HTMLElement = document.querySelector("#insert-products")!;
 const searchInput: HTMLInputElement = document.querySelector("#input-search")!;
 const btnCart: HTMLElement = document.querySelector("#cart-button")!;
 
-showPlaceholderLoading(insertProducts);
+showPlaceholderLoading(insertProducts, 'colaborator');
 
 verifyExistisCart()
 

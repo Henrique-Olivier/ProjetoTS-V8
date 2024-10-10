@@ -39,7 +39,8 @@ const products = await getProducts();
 
 btnNewProduct.addEventListener("click", addModal);
 
-showPlaceholderLoading(insertProducts);
+showPlaceholderLoading(insertProducts, 'manager');
+
 function clearModal(clearRemoveModal?:boolean) {
     if(clearRemoveModal){
         return alertModal.classList.add('d-none');
@@ -85,7 +86,7 @@ if (categories !== null ) {
 }
 
 async function listProducts() {
-    showPlaceholderLoading(insertProducts);
+    showPlaceholderLoading(insertProducts, 'manager');
 
     const produtos = await getProducts();
     setTimeout(() =>{

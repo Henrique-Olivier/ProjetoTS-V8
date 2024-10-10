@@ -1,6 +1,6 @@
 import { getProducts } from "./utils";
 
-const products = await getProducts()!;
+const products = await getProducts();
 
 export function verifyExistisCart() {
   const cart = localStorage.getItem("UserCart");

@@ -77,12 +77,12 @@ export function mainLogin() {
             const isAdmin = validateAdmin(emailLogin);
             const isCollab = validateCollab(emailLogin);
 
-            if(isAdmin != undefined) {
+            if(isAdmin) {
                 showAlert("alert-success");
                 return redirectPage("gestor.html");
             }
 
-            if(isCollab != undefined) {
+            if(isCollab) {
                 showAlert("alert-success");
                 return redirectPage("colaborador.html")
             }

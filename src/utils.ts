@@ -8,9 +8,20 @@ const supabaseKey: string = import.meta.env.VITE_SUPABASE_ANON_KEY;
 const categories = await getCategories();
 
 
-export function showPlaceholderLoading(elemento: HTMLElement) {
+function showBtnPlaceholder(type: string): string {
+    if(type === 'manager') {
+        return ` <button class="btn btn-primary disabled placeholder text-primary">edit</button>
+                        <button class="btn btn-danger disabled placeholder text-danger">remove</button>`
+    } else {
+        return `
+         <button class="btn btn-primary disabled placeholder text-primary">edit</button>
+    `
+    }
+}
+
+export function showPlaceholderLoading(elemento: HTMLElement, type: string) {
     elemento.innerHTML = '';
-    for (let index = 0; index < 4; index++) {
+    for (let index = 0; index < 2; index++) {
         elemento.innerHTML += `
         <div class="col-lg-3">
             <div class="card" aria-hidden="true">
@@ -29,8 +40,7 @@ export function showPlaceholderLoading(elemento: HTMLElement) {
                         <span class="placeholder col-8"></span>
                     </p>
                     <div class="d-flex align-items-center" style="gap: 20px;">
-                        <button class="btn btn-primary disabled placeholder text-primary">edit</button>
-                        <button class="btn btn-danger disabled placeholder text-danger">remove</button>
+                       ${showBtnPlaceholder(type)}
                         <span class="placeholder col-2"></span>
                     </div>
                 </div>

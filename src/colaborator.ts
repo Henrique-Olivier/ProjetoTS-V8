@@ -12,7 +12,7 @@ const btnLogout = document.querySelector(".btn-link")!;
 
 btnLogout.addEventListener("click", logout);
 
-showPlaceholderLoading(insertProducts);
+showPlaceholderLoading(insertProducts, 'colaborator');
 
 verifyExistisCart()
 

@@ -269,7 +269,7 @@ function addNewProduct(
         showAlert(alertModal, "Novo Produto Adicionado!", "alert-success");
         setTimeout(() => btnModalClose.click(), 1000);
         setTimeout(() => {
-          showLoading(false, "btn-remove-product");
+          showLoading(false, "btn-add-product");
         }, 1200);
         setTimeout(() => {
           listProducts();
@@ -347,7 +347,7 @@ function editProduct(
         showAlert(alertModal, "Produto Editado com sucesso!", "alert-success");
         setTimeout(() => btnModalClose.click(), 1000);
         setTimeout(() => {
-          showLoading(false, "btn-remove-product");
+          showLoading(false, "btn-edit-product");
         }, 1200);
         setTimeout(() => {
           listProducts();
